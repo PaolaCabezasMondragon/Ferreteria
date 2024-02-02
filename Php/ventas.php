@@ -55,8 +55,10 @@ if (!isset($_SESSION['correo'])) {
             <?php include "../compartido/menuLateral.php"; ?>
         </div>
         <div class="inventario">
+            <div class="content-ventas">
             <h4 id="titulo-tabla">Documento de Venta</h4>
-            <div id="conten-venta">
+
+            <div class="content-ventas">
                 <form id="formulario-venta" action="../compartido/agregarVenta.php" method="POST">
                     <div id="contenidoUno">
 
@@ -106,9 +108,16 @@ if (!isset($_SESSION['correo'])) {
                         <button id="btn-venta" type="submit" name="guardar">
                             <i class="fas fa-save"></i><i class="fas fa-arrow-circle-right"></i> Guardar
                         </button>
+
+                     
                     </div>
                 </form>
+                <form action="generar_reporte_ventas.php" method="GET" target="_blank">
+                            <button type="submit">Descargar Reporte de Ventas</button>
+                        </form>
             </div>
+            </div>
+            
             <?php
             include "../compartido/conexion.php";
 
@@ -202,6 +211,8 @@ if (!isset($_SESSION['correo'])) {
                                         <input type="hidden" name="id" value="<?php echo $row['idcodigo']; ?>">
                                         <button type="submit" name="eliminar"><i class="fas fa-trash"></i></button>
                                     </form>
+                                    <a href="generar_pdf.php?id=<?php echo $row['idcodigo']; ?>" target="_blank">Descargar PDF</a>
+
                                 </td>
                             </tr>
                         <?php
@@ -223,6 +234,45 @@ if (!isset($_SESSION['correo'])) {
         </div>
     </div>
     <?php include "../compartido/footer.php"; ?>
+    <?php
+session_start();
+
+if (!isset($_SESSION['correo'])) {
+    header('Location: index.php'); // Redirigir si el usuario no ha iniciado sesión
+    exit();
+}
+
+include "../compartido/conexion.php"; // Asegúrate de que este es el camino correcto al archivo de conexión
+
+// Verificar si el formulario fue enviado
+if (isset($_POST['guardar'])) {
+    $id = $_POST['id']; // Asegúrate de que este campo sea opcional o manejado adecuadamente si es autoincremental
+    $producto = $_POST['producto'];
+    $precio = $_POST['precio'];
+    $cantidad = $_POST['cantidad'];
+    $descripcion = $_POST['descripcion'];
+    $categoria = $_POST['categoria'];
+    $imagen = $_POST['imagen']; // Este campo debe ser manejado adecuadamente para almacenar rutas de imágenes o cargar archivos
+
+    // Preparar la consulta SQL para insertar la nueva venta
+    $query = "INSERT INTO ventas (idcodigo, producto, precio_unitario, cantidad, descripcion, Categoria, imagen) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    
+    $stmt = $conn->prepare($query);
+    if ($stmt) {
+        $stmt->bind_param("sssisss", $id, $producto, $precio, $cantidad, $descripcion, $categoria, $imagen);
+        $stmt->execute();
+        if ($stmt->affected_rows > 0) {
+            echo "<script>alert('Venta agregada con éxito');</script>";
+        } else {
+            echo "<script>alert('Error al agregar la venta');</script>";
+        }
+        $stmt->close();
+    } else {
+        echo "<script>alert('Error de preparación de la consulta');</script>";
+    }
+}
+
+?>
 </body>
 
 </html>

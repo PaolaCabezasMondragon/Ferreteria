@@ -96,10 +96,14 @@ button.btn-login:hover {
     background-color: aliceblue;
 }
 .inventario{
+    position:relative;
     width: 100%;
     max-height: 400px; 
     overflow:auto;
     align-content: center;
+}
+.content-ventas{
+    padding-top: 150px;
 }
 #formulario-venta {
     width: 100%;
