@@ -496,7 +496,7 @@ DROP TABLE IF EXISTS `ventas_por_cliente`;
 
 /*!50001 DROP TABLE IF EXISTS `productos_vendidos_por_mes` */;
 /*!50001 DROP VIEW IF EXISTS `productos_vendidos_por_mes` */;
-
+ 
 /*!50001 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `productos_vendidos_por_mes` AS select month(`factura`.`fechaFactura`) AS `mes`,count(`detallefactura`.`idDetalleFactura`) AS `cantidadProductos` from (`factura` join `detallefactura` on(`detallefactura`.`factura_idFactura` = `factura`.`idFactura`)) group by month(`factura`.`fechaFactura`) */;
 
 /*View structure for view total_ventas_por_producto */
